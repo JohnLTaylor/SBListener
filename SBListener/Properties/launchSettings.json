@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "sbclient": {
+      "commandName": "Project",
+      "commandLineArgs": "-e 'Endpoint=sb://dataservices-rc.servicebus.windows.net/;SharedAccessKeyName=Listener;SharedAccessKey=dBAqI+Cpfow42RKfO88xtem1zjuC+MGK5akwQNcu7Pg=' topic triggerevents monitor"
+    }
+  }
+}
