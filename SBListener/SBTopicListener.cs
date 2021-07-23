@@ -13,6 +13,7 @@ namespace SBListener
         private readonly string _connectionString;
         private readonly string _topic;
         private readonly string _subscription;
+        private readonly StreamWriter _stdout;
         private readonly StreamWriter _stderr;
 
         public SBTopicListener(string connectionString, string topic, string subscription)
@@ -31,7 +32,8 @@ namespace SBListener
             _topic = topic;
             _subscription = subscription;
 
-            _stderr = new StreamWriter(Console.OpenStandardError());
+            _stdout = new StreamWriter(Console.OpenStandardOutput(8192));
+            _stderr = new StreamWriter(Console.OpenStandardError(8192));
         }
 
         public async Task Listen(CancellationToken cancellationToken)
@@ -50,9 +52,10 @@ namespace SBListener
             await client.UnregisterMessageHandlerAsync(TimeSpan.FromMinutes(5));
         }
 
-        private static Task ClientHandler(Message arg1, CancellationToken cancellationToken)
+        private Task ClientHandler(Message arg1, CancellationToken cancellationToken)
         {
-            Console.WriteLine($"{Encoding.UTF8.GetString(arg1.Body)}");
+            _stdout.WriteLine($"{Encoding.UTF8.GetString(arg1.Body)}");
+            _stdout.Flush();
             return Task.CompletedTask;
         }
 
