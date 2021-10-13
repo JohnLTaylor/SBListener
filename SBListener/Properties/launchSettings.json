@@ -2,7 +2,7 @@
   "profiles": {
     "sbclient": {
       "commandName": "Project",
-      "commandLineArgs": "-e 'Endpoint=sb://dataservices-rc.servicebus.windows.net/;SharedAccessKeyName=Listener;SharedAccessKey=dBAqI+Cpfow42RKfO88xtem1zjuC+MGK5akwQNcu7Pg=' topic triggerevents monitor"
+      "commandLineArgs": "-e 'Endpoint=sb://stg-sap-svcb.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=2ZvrBH3bkp+NxImRg3vTvz35z10opT1kO3mXfRLH8Co=' topic alerts monitor"
     }
   }
 }

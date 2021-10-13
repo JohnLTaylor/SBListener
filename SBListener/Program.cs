@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SBListener
 {
@@ -26,6 +27,12 @@ namespace SBListener
                 var topicArg = cmd.Argument("[topic]", "Service bus topic to listen to");
                 var subscriptionArg = cmd.Argument("[subscription]", "Service bus topic subscription to listen to");
 
+                var peekArg = cmd.Option("-p | --peek",
+                    "Use Peek instead of delete when reading queue", CommandOptionType.NoValue);
+
+                var envolpeArg = cmd.Option("-m | --message-envolpe",
+                    "Write the whole message envolpe instead of just the body", CommandOptionType.NoValue);
+
                 cmd.OnExecute(async () =>
                 {
                     if (!endPointParam.HasValue() || string.IsNullOrEmpty(topicArg.Value) || string.IsNullOrEmpty(subscriptionArg.Value))
@@ -35,7 +42,7 @@ namespace SBListener
                     }
 
                     var connectionString = ConnectionString(endPointParam);
-                    await new SBTopicListener(connectionString, topicArg.Value, subscriptionArg.Value).Listen(_cancelKeyPressed.Token);
+                    await new SBTopicListener(connectionString, topicArg.Value, subscriptionArg.Value, peekArg.HasValue(), envolpeArg.HasValue()).Listen(_cancelKeyPressed.Token);
 
                     return 0;
                 });
@@ -47,7 +54,15 @@ namespace SBListener
                 return 0;
             });
 
-            return cliApp.Execute(args);
+            try
+            {
+                return cliApp.Execute(args);
+            }
+            catch (TaskCanceledException)
+            {
+
+                return 0;
+            }
         }
 
         private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
